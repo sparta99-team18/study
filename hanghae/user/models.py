@@ -22,10 +22,10 @@ class User:
       "password": request.form.get('password')
     }
 
-    # 비밀번호 암호화
+    # Encrypt the password
     user['password'] = pbkdf2_sha256.encrypt(user['password'])
 
-    # 이메일 계정 중복 체크
+    # Check for existing email address
     if db.users.find_one({ "email": user['email'] }):
       return jsonify({ "error": "Email address already in use" }), 400
 
