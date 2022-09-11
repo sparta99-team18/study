@@ -23,11 +23,32 @@
                     <div class="btn-area">
                         <input type="submit" value="Log In" class="btn">
                     </div>
-
                 </form>
-                <button><a href="/home" class="btn-area">회원가입하기</a></button>
-            </div>
+                    <div calss="kakao">
+                             <a href="javascript:kakaoLogin();"><img src="https://www.gb.go.kr/Main/Images/ko/member/certi_kakao_login.png" style="height:60px;width:auto;"></a>
+                            <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+                            <script>
+                                //e3c04fecad73ab552d72eb27d783e6d2
+                                window.Kakao.init("e3c04fecad73ab552d72eb27d783e6d2");
+                                function kakaoLogin() {
+                                    window.Kakao.Auth.login({
+                                        scope: 'profile, account_email, gender',
+                                        success: function (authObj) {
+                                            console.log(authObj);
+                                            window.Kakao.API.request({
+                                                url: '/v2/user/me',
+                                                success: res => {
+                                                    const kakao_account = res.kakao_account;
+                                                    console.log(kakao_account);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            </script>
+                    </div>
 
+                    <a href="/home" class="signup_text">회원가입하기</a>
 
             </div>
         </body1>

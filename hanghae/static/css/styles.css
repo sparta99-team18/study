@@ -6,6 +6,16 @@
         }
         /*home.html css 적용내용*/
          * {margin:0; padding: 0; box-sizing: border-box;}
+.signup_text{
+    height: 40;
+    width: auto;
+    border-radius: initial;
+    display: table;
+    width: auto;
+    text-align: center;
+    vertical-align: middle;
+
+}
 body1{
     font-family: 'Noto Sans KR', sans-serif;
     display: flex;
