@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="generator" content="">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/style.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Dosis:200,300,400,500,600,700" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:200,300,400,500,600,700" rel="stylesheet">
+        <meta property="og:title" content="python 공부꿀팁사이트"/>
+        <meta property="og:description" content="python 공부꿀팁사이트 공유해주시고 가세요!"/>
+        <meta property="og:image"
+              content="https://s3.ap-northeast-2.amazonaws.com/grepp-cloudfront/programmers_imgs/learn/thumb-course-phthon-basic.jpg"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+              crossorigin="anonymous">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                crossorigin="anonymous"></script>
+        <title>python공부 꿀팁사이트</title>
+        <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+        <style>
+        </style>
+        <script>
+        </script>
+    </head>
+
+    <div class="head">
+        <div class="mytitle">
+            <h1>{{ session['user']['name'] }}님 환영합니다😎 </h1><br>
+            <h2>파이썬 공부 꿀팁사이트</h2>
+        </div>
+    </div>
+    <h5 class="center">
+        <button onclick="open_box()">꿀팁사이트공유하기</button>
+    </h5>
+    </div>
+    <div class="card-wrapper">
+        <div class="mypost" id="post-box">
+            <div class="form-floating mb-3">
+                <input id="url" type="email" class="form-control" placeholder="name@example.com">
+                <label>꿀팁사이트URL</label>
+            </div>
+            <div class="form-floating mb-3">
+                <label class="input-group-text" for="inputGroupSelect01">별점</label>
+                <select class="form-select" id="star">
+                    <option selected>--------------- 선택하기 --------</option>
+                    <option value="1">⭐</option>
+                    <option value="2">⭐⭐</option>
+                    <option value="3">⭐⭐⭐</option>
+                    <option value="4">⭐⭐⭐⭐</option>
+                    <option value="5">⭐⭐⭐⭐⭐</option>
+                </select>
+            </div>
+            <div class="form-floating mb-3">
+                <textarea id="comment" class="form-control" placeholder="Leave a comment here"></textarea>
+                <label for="floatingTextarea2">코멘트</label>
+            </div>
+            <div class="mybtn">
+                <button onclick="posting()" type="button" class="btn btn-dark">사이트기록하기</button>
+                <!--사이트기록하기 버튼 선택 > posting() 함수로 이동됨 -->
+                <button onclick="close_box()" type="button" class="btn btn-outline-dark">닫기</button>
+            </div>
+        </div>
+        <!----------  여기까지가 id : post-box <div>영역  --------------------------------------------------------------------->
+        <div class="myedit" id="edit-box">
+        </div>
+        <div class="delete" id="delete-box">
+        </div>
+    </div>
+    <div class="mycards">
+        <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
+        </div>
+    </div>
+    <div class="wrap">
+    </div>
+    </body>
+
+       <div id="disqus_thread" >
+           <a href="http://foo.com/bar.html#disqus_thread">Link</a>.
+           <script id="dsq-count-scr" src="//hanghae-1.disqus.com/count.js" async></script>
+       </div>
+        <script>
+                //상단 꿀팁 사이트 공유하기 입력 박스 열기
+        function open_box() {
+            $('#post-box').show() // id: post-box
+        }
+        function close_box() {
+            $('#post-box').hide()
+        }
+        $(document).ready(function () {
+            listing();
+        });
+        function listing() {
+            $.ajax({
+                type: 'GET',
+                url: '/pythonthema',
+                data: {},
+             success: function (response) {
+                    let rows = response['pythonthema']
+                    for (let i = 0; i < rows.length; i++) {
+                        let num = rows[i]['num']
+                        let comment = rows[i]['comment']
+                        let title = rows[i]['title']
+                        let desc = rows[i]['desc']
+                        let image = rows[i]['image']
+                        let star = rows[i]['star']
+                        let star_image = '⭐'.repeat(star)
+                        let temp_html = `<div class="col">
+                                            <div class="card h-100">
+                                                    <img src="${image}"  class="card-img-top">
+                                                    <div class="card-body">
+
+                                                        <h5 class="card-title">${title}</h5>
+                                                        <p class="card-text">${desc}</p>
+                                                        <p>${star_image}</p>
+                                                        <p class="mycomment">${comment}</p>
+                                                    </div>
+                                                    <div class="change">
+                                                        <div class="btns">
+                                                             <button onclick="open_edit(${num})" type="button" class="btn btn-outline-secondary btn-sm">수정</button>
+                                                             <button onclick="delete_edit(${num})" type="button" class="btn btn-outline-secondary btn-sm">삭제</button>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </div>`
+                        $('#cards-box').append(temp_html)
+                    }
+                }
+            })
+        }
+        //delete_edit
+          function delete_edit(num){
+            $('#delete-box').empty() //
+            $('#delete-box').show()  //id: delete-box
+            let temp_html = `<h3>삭제하시겠습니까?</h3>
+                                  <div class="delete_btns">
+                                      <button onclick="delete_btn(${num})" type="button" class="btn btn-outline-dark ">삭제</button>
+                                      <button onclick="cancel_btn()" type="button" class="btn btn-dark ">취소</button>
+                                  </div>`
+            $('#delete-box').append(temp_html)
+          }
+          //delete_btn
+          function delete_btn(num){             // delete_ben에 num값 보내기
+                     $.ajax({
+                        type: "POST",                   // POST 요청
+                        url: "/delete",                 // /delete 경로에
+                        data: {num_give: num},          // num을 받아서
+                        success: function (response) {  // 성공하면, response에 값을 담아서
+                            alert(response["msg"])      // msg를 띄운다.
+
+                            window.location.reload()  //새로고침
+                        }
+                 });
+          }
+          //cancel_btn
+         function cancel_btn() {          // cancel_btn 함수
+            $('#delete-box').hide()       // id: delete-box 숨기기
+            window.location.reload()      // 새로고침
+        }
+        // 저장 자바스크립트 함수
+        // 사이트 url, 별점, 코멘트 입력 후, 사이트기록하기 버튼을 클릭하면,
+        // posting 함수로 이동되어 여기로 도착
+        function posting() {
+            let url = $('#url').val()          //  input에 입력한 id: url 의 입력된 값을 가져와서 url로 넣는다.
+            let star = $('#star').val()        //  input에 입력한 id: star 의 입력된 값을 가져와서 star 로 넣는다.
+            let comment = $('#comment').val()  // input에 입력한 id: comment의 입력된 값을 가져와서 comment로 넣는다.
+            let num = $('#num').val()          // ★★★num 값을 추가// num값이 pythonthema db에 들어온것 확인 num:12
+            $.ajax({                           // ajax POST 방식으로 /pythonthema 경로로 , data{url_give: url, star_give:star, comment_give:comment }를 보낸다.
+                type: 'POST',                   // POST 요청
+                url: '/pythonthema',            // app.py 파일의 /pythonthema 경로로 'POST' 요청을 보낸다.
+                data: {url_give: url, star_give: star, comment_give: comment, num_give: num }, // num 값 전달 추가
+                success: function (response) {    // 성공하면 reponse에 url, star, comment의 값을 담아 보낸다.
+                    alert(response['msg'])       // 'msg' 를 얼럿으로 띄운다.
+                    window.location.reload()     // 페이지 새로고침 한다.
+                }
+            });
+        }
+        // 수정 버튼 클릭시 onclick 이벤트를 통해서, open_edit 함수로 이동되어 여기로 온다.
+        function open_edit(num){ // num 값을 가져온다
+            $('#edit-box').empty() // id: edit-box를 비운다.
+            $('#edit-box').show()  // id: edit-box를 보여준다.
+            $.ajax({               // ajax GET 방식으로 /edit 경로로 num 값을 보낸다.
+                type: 'GET',       // GET 요청
+                url: '/open/edit',      // app.py 파일의 /edit 경로로 'GET' 요청을 보낸다.
+                data: {num_give: num}, // num 값을 보낸다.
+                success: function (response) { // 성공하면 response에 num, url, star, comment 값을 담아 보낸다.
+                    let rows = (response['pythonthema']) // pythonthema 테이블의 모든 값을 rows에 담는다.
+                     for (let i=0; i<rows.length; i++){
+                         let num1 = rows[i]['num'] // num 값을 num1에 담는다.
+                         let url = rows[i]['url'] // url 값을 url에 담는다.
+                         let star = rows[i]['star'] // star 값을 star에 담는다.
+                         let comment = rows[i]['comment'] // comment 값을 comment에 담는다.
+                         let temp_html = `` // temp_html에 html 코드를 담는다.
+
+                         if(num === num1) {
+                             temp_html = `
+                                             <div class="edit-box">
+                                                 <div class="edit-box-title">
+                                                     <h3>사이트 수정하기</h3>
+                                                 </div>
+                                                 <div class="edit-box-content">
+                                                     <div class="edit-box-content-url">
+                                                         <input type="text" id="url_e" value="${url}">
+                                                     </div>
+                                                     <div class="edit-box-content-star">
+                                                         <input type="text" id="star_e" value="${star}">
+                                                     </div>
+                                                     <div class="edit-box-content-comment">
+                                                         <input type="text" id="comment_e" value="${comment}">
+                                                     </div>
+                                                     <div class="edit-box-content-btn">
+                                                         <button class="edit-box-content-btn-save" onclick="edit_order(${num})">수정하기</button>
+                                                         <button class="edit-box-content-btn-cancel" onclick="close_edit()">닫기</button>
+                                                     </div>
+                                                 </div>
+                                             </div> `
+                         } else {
+                             temp_html = ``
+                         }
+                            $('#edit-box').append(temp_html) // id: edit-box에 temp_html을 추가한다.
+                     }
+                }
+            });
+        }
+           // 수정입력 박스 닫기, 수정입력박스 id: #edit-box
+        function close_edit(){
+            $('#edit-box').hide()
+            window.location.reload()
+        }
+
+        //수정하기 버튼 선택 시, edit_order() 함수실행
+        function edit_order(num){
+                let url = $('#url_e').val()
+                let star = $('#star_e').val()
+                let comment = $('#comment_e').val()
+                    $.ajax({
+                        type: 'POST',
+                        url: '/save/edit',
+                        data: {url_give: url, star_give: star, comment_give: comment, num_give: num },
+                        success: function (response) {
+                            alert(response['msg'])
+                            window.location.reload()
+                        }
+                });
+        }
+        </script>
+        <script>
+
+            (function () {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://hanghae-1.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+
+    </html>
+{% endblock %}
